@@ -117,8 +117,9 @@ public class GeneralController {
     public AllFollowingResponse allFollowing(String username) {
         boolean success = false;
         Integer errorCode = null;
-        List<User> allFollowing = new ArrayList<>();
+        List<User> allFollowing = null;
         if (username != null) {
+            allFollowing=new ArrayList<>();
             allFollowing = dbUtils.getAllFollowing(username);
             success = true;
         } else {
