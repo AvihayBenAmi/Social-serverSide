@@ -74,7 +74,6 @@ public class GeneralController {
     }
 
 
-
     @RequestMapping("get-user-search-result")
     public UserFoundSearchResponse getUserSearchResult(String search) {
         boolean success = false;
@@ -125,20 +124,19 @@ public class GeneralController {
     }
 
     @RequestMapping("post")
-    public BasicResponse addPost(String username,String post){
+    public BasicResponse addPost(String username, String post) {
         System.out.println("income post");
         boolean success = false;
         Integer errorCode = null;
-        if(post!=null){
-            success=dbUtils.addPost(username,post);
+        if (post != null) {
+            success = dbUtils.addPost(username, post);
+        } else {
+            errorCode = FAIL_PUBLISH_POST;
         }
-        else {
-            errorCode= FAIL_PUBLISH_POST;
-        }
-        return new BasicResponse(success,errorCode);
+        return new BasicResponse(success, errorCode);
     }
 
-@RequestMapping("get-all-posts")
+    @RequestMapping("get-all-posts")
     public GetAllPostsResponse getAllPosts(String username) {
         boolean success = false;
         Integer errorCode = null;
@@ -154,7 +152,7 @@ public class GeneralController {
     }
 
     @RequestMapping("show-feed")
-    public ShowFeedResponse showFeed(String username){
+    public ShowFeedResponse showFeed(String username) {
         boolean success = false;
         Integer errorCode = null;
         List<Post> feed = new ArrayList<>();
