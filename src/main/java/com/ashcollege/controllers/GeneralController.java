@@ -79,6 +79,19 @@ public class GeneralController {
 //        return new UsersResponse(allUsers);
 //    }
 
+    @RequestMapping("post")
+    public BasicResponse addPost(String username,String post){
+        boolean success = false;
+        Integer errorCode = null;
+        if(post!=null){
+            success=dbUtils.addPost(username,post);
+        }
+        else {
+            errorCode= FAIL_PUBLISH_POST;
+        }
+        return new BasicResponse(success,errorCode);
+    }
+
     @RequestMapping("get-user-search-result")
     public UserFoundSearchResponse getUserSearchResult(String search) {
         boolean success = false;
@@ -126,6 +139,22 @@ public class GeneralController {
             errorCode = ERROR_MISSING_USERNAME;
         }
         return new AllFollowingResponse(success, errorCode, allFollowing);
+
+    }
+
+    @RequestMapping("/get-all-posts")
+    public GetAllPostsResponse getAllPosts(String username) {
+        boolean success = false;
+        Integer errorCode = null;
+        List<String> allPosts = null;
+        if (username != null) {
+            allPosts=new ArrayList<>();
+            allPosts = dbUtils.getAllPosts(username);
+            success = true;
+        } else {
+            errorCode = ERROR_GET_ALL_POSTS;
+        }
+        return new GetAllPostsResponse(success, errorCode, allPosts);
 
     }
 

@@ -9,4 +9,8 @@ public class Errors {
     public static final int ERROR_MISSING_SEARCH= 104;
 
     public static final int ERROR_FOLLOW_DONT_SUCCESS=105;
+
+    public static final int FAIL_PUBLISH_POST=106;
+
+    public static final int ERROR_GET_ALL_POSTS=107;
 }

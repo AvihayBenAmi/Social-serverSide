@@ -12,10 +12,10 @@ import java.util.List;
 @Component
 public class DbUtils {
 
-    private  Connection connection = null;
+    private Connection connection = null;
 
     @PostConstruct
-    public Connection createConnection () {
+    public Connection createConnection() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "root", "1234");
@@ -28,7 +28,7 @@ public class DbUtils {
         return connection;
     }
 
-    public boolean signIn (String username, String password) {
+    public boolean signIn(String username, String password) {
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(
@@ -43,8 +43,9 @@ public class DbUtils {
             throw new RuntimeException(e);
         }
     }
-    public boolean registerUser (User user) {
-        boolean result=false;
+
+    public boolean registerUser(User user) {
+        boolean result = false;
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(
@@ -52,7 +53,7 @@ public class DbUtils {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.executeUpdate();
-            result=true;
+            result = true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -60,9 +61,7 @@ public class DbUtils {
 
     }
 
-
-
-    public boolean usernameAvailable (String username) {
+    public boolean usernameAvailable(String username) {
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(
@@ -77,7 +76,7 @@ public class DbUtils {
     }
 
 
-    public List<User> getAllFollowing (String username) {
+    public List<User> getAllFollowing(String username) {
         List<User> allFollowing = null;
         try {
             allFollowing = new ArrayList<>();
@@ -98,21 +97,21 @@ public class DbUtils {
     }
 
     public List<User> getUserSearchResult(String search) throws SQLException {
-       List<User> searchResult=new ArrayList<>();
+        List<User> searchResult = new ArrayList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT username FROM users WHERE username LIKE ?");
-        preparedStatement.setString(1,search+"%");
-        ResultSet resultSet=preparedStatement.executeQuery();
-        while(resultSet.next()){
-            User user=new User();
+        preparedStatement.setString(1, search + "%");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            User user = new User();
             user.setUsername(resultSet.getString("username"));
             searchResult.add(user);
         }
         return searchResult;
     }
 
-    public boolean follow (String username, String name) {
-        boolean result=false;
+    public boolean follow(String username, String name) {
+        boolean result = false;
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(
@@ -120,7 +119,7 @@ public class DbUtils {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, name);
             preparedStatement.executeUpdate();
-            result=true;
+            result = true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -128,5 +127,40 @@ public class DbUtils {
 
     }
 
+    public boolean addPost(String username, String post) {
+        boolean result = false;
+        try {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(
+                            "INSERT INTO posts (username, post) VALUE (?, ?)");
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, post);
+            preparedStatement.executeUpdate();
+            result = true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
 
+    public List<String> getAllPosts(String username) {
+        List<String> allPosts = null;
+        try {
+            allPosts = new ArrayList<>();
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT post FROM posts WHERE username = ?"
+            );
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                String post;
+                post = resultSet.getString("post");
+                allPosts.add(post);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return allPosts;
+    }
 }
