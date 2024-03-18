@@ -1,5 +1,6 @@
 package com.ashcollege.controllers;
 
+import com.ashcollege.entities.Post;
 import com.ashcollege.entities.User;
 import com.ashcollege.responses.*;
 import com.ashcollege.utils.DbUtils;
@@ -26,8 +27,7 @@ public class GeneralController {
 
     @RequestMapping("/sign-in")
     public LoginResponse checkUser(String username, String password) {
-        boolean success = false;
-        Integer errorCode = null;
+        boolean success;
         success = dbUtils.signIn(username, password);
         return new LoginResponse(success);
     }
@@ -73,18 +73,7 @@ public class GeneralController {
 
     }
 
-    @RequestMapping("post")
-    public BasicResponse addPost(String username,String post){
-        boolean success = false;
-        Integer errorCode = null;
-        if(post!=null){
-            success=dbUtils.addPost(username,post);
-        }
-        else {
-            errorCode= FAIL_PUBLISH_POST;
-        }
-        return new BasicResponse(success,errorCode);
-    }
+
 
     @RequestMapping("get-user-search-result")
     public UserFoundSearchResponse getUserSearchResult(String search) {
@@ -108,7 +97,7 @@ public class GeneralController {
     public BasicResponse follow(String username, String name) {
         boolean success = false;
         Integer errorCode = null;
-        boolean added = false;
+        boolean added;
         if (name != null && !name.isEmpty()) {
             added = dbUtils.follow(username, name);
             System.out.println(added);
@@ -124,9 +113,8 @@ public class GeneralController {
     public AllFollowingResponse allFollowing(String username) {
         boolean success = false;
         Integer errorCode = null;
-        List<User> allFollowing = null;
+        List<User> allFollowing = new ArrayList<>();
         if (username != null) {
-            allFollowing=new ArrayList<>();
             allFollowing = dbUtils.getAllFollowing(username);
             success = true;
         } else {
@@ -136,13 +124,26 @@ public class GeneralController {
 
     }
 
-    @RequestMapping("/get-all-posts")
+    @RequestMapping("post")
+    public BasicResponse addPost(String username,String post){
+        System.out.println("income post");
+        boolean success = false;
+        Integer errorCode = null;
+        if(post!=null){
+            success=dbUtils.addPost(username,post);
+        }
+        else {
+            errorCode= FAIL_PUBLISH_POST;
+        }
+        return new BasicResponse(success,errorCode);
+    }
+
+@RequestMapping("get-all-posts")
     public GetAllPostsResponse getAllPosts(String username) {
         boolean success = false;
         Integer errorCode = null;
-        List<String> allPosts = null;
+        List<Post> allPosts = new ArrayList<>();
         if (username != null) {
-            allPosts=new ArrayList<>();
             allPosts = dbUtils.getAllPosts(username);
             success = true;
         } else {
@@ -150,6 +151,20 @@ public class GeneralController {
         }
         return new GetAllPostsResponse(success, errorCode, allPosts);
 
+    }
+
+    @RequestMapping("show-feed")
+    public ShowFeedResponse showFeed(String username){
+        boolean success = false;
+        Integer errorCode = null;
+        List<Post> feed = new ArrayList<>();
+        if (username != null) {
+            feed = dbUtils.showFeed(username);
+            success = true;
+        } else {
+            errorCode = ERROR_GET_FEED;
+        }
+        return new ShowFeedResponse(success, errorCode, feed);
     }
 
 

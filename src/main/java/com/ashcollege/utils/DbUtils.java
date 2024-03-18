@@ -1,5 +1,6 @@
 package com.ashcollege.utils;
 
+import com.ashcollege.entities.Post;
 import com.ashcollege.entities.User;
 import org.springframework.stereotype.Component;
 
@@ -143,24 +144,47 @@ public class DbUtils {
         return result;
     }
 
-    public List<String> getAllPosts(String username) {
-        List<String> allPosts = null;
+    public List<Post> getAllPosts(String username) {
+        List<Post> allPosts = null;
         try {
             allPosts = new ArrayList<>();
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT post FROM posts WHERE username = ?"
+                    "SELECT * FROM posts WHERE username = ? ORDER BY date DESC"
             );
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                String post;
-                post = resultSet.getString("post");
+                Post post=new Post();
+                post.setPost(resultSet.getString("post"));
+                post.setTime(resultSet.getString("date"));
                 allPosts.add(post);
-
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return allPosts;
+    }
+
+    public List<Post> showFeed(String username) {
+        List<Post> feed =  new ArrayList<>();
+        List<User> following = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT *" +
+                            " FROM posts JOIN followers ON posts.username = followers.follow" +
+                            "  WHERE follower = ? ORDER BY posts.date DESC LIMIT 20");
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Post post=new Post();
+                post.setUsername(resultSet.getString("username"));
+                post.setPost(resultSet.getString("post"));
+                post.setTime(resultSet.getString("date"));
+                feed.add(post);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return feed;
     }
 }
