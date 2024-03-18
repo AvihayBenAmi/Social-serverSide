@@ -73,12 +73,6 @@ public class GeneralController {
 
     }
 
-//    @RequestMapping("get-all-users")
-//    public UsersResponse getAllUsers () {
-//        List<User> allUsers = dbUtils.getAllUsers();
-//        return new UsersResponse(allUsers);
-//    }
-
     @RequestMapping("post")
     public BasicResponse addPost(String username,String post){
         boolean success = false;
