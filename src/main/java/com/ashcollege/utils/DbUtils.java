@@ -154,7 +154,7 @@ public class DbUtils {
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Post post=new Post();
+                Post post = new Post();
                 post.setPost(resultSet.getString("post"));
                 post.setTime(resultSet.getString("date"));
                 allPosts.add(post);
@@ -166,7 +166,7 @@ public class DbUtils {
     }
 
     public List<Post> showFeed(String username) {
-        List<Post> feed =  new ArrayList<>();
+        List<Post> feed = new ArrayList<>();
         List<User> following = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -176,7 +176,7 @@ public class DbUtils {
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Post post=new Post();
+                Post post = new Post();
                 post.setUsername(resultSet.getString("username"));
                 post.setPost(resultSet.getString("post"));
                 post.setTime(resultSet.getString("date"));
