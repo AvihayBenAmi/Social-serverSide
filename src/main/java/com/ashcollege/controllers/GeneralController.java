@@ -135,7 +135,7 @@ public class GeneralController {
         }
         return new BasicResponse(success, errorCode);
     }
-
+//
     @RequestMapping("get-all-posts")
     public GetAllPostsResponse getAllPosts(String username) {
         boolean success = false;
